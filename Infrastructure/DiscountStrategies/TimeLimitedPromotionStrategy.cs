@@ -1,4 +1,5 @@
-using FlexiPrice.Models;
+using FlexiPrice.Core.Interfaces;
+using FlexiPrice.Core.Models;
 
 namespace FlexiPrice.Infrastructure.DiscountStrategies
 {
