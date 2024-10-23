@@ -5,6 +5,8 @@
 **FlexiPrice** is a flexible and dynamic pricing .Net Library designed for e-commerce platforms. It allows for calculating product prices based on various factors such as customer loyalty, stock levels, time-limited promotions, and other customizable strategies. This project is open-source and can be used and expanded as needed.it has some different example strategies that you can modify them or build your strategies on top of them.so:
 ## Any contribution would be welcomed for adding more strategies to project.
 
+[![NuGet](https://img.shields.io/nuget/v/FlexiPrice)](https://www.nuget.org/packages/FlexiPrice/)   [![NuGet](https://img.shields.io/nuget/dt/FlexiPrice)](https://www.nuget.org/packages/FlexiPrice/)
+
 ## Features
 - **Dynamic Pricing**: Calculate product prices dynamically based on multiple discount strategies.
 - **Customizable**: Easily add or modify discount strategies according to your business logic.
