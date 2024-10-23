@@ -8,190 +8,133 @@
 - **Customizable**: Easily add or modify discount strategies according to your business logic.
 - **Modular Design**: The engine is designed as a reusable .NET library that can be integrated into any e-commerce system.
 
----
+Table of Contents
+Installation
+Usage
+Advanced Factors
+Extending FlexiPriceEngine
+Discount Strategies
+Contributing
+License
+Installation
+Follow these steps to install and use FlexiPriceEngine in your project:
 
-## Table of Contents
+Clone the repository:
 
-1. [Getting Started](#getting-started)
-2. [Usage](#usage)
-3. [Adding Custom Discount Strategies](#adding-custom-discount-strategies)
-4. [Expanding the Project](#expanding-the-project)
-5. [Contributing](#contributing)
+bash
+Copy code
+git clone https://github.com/yourusername/FlexiPriceEngine.git
+Build the project:
 
----
+bash
+Copy code
+dotnet build
+Add reference: Add a reference to the FlexiPriceEngine.Core and FlexiPriceEngine.Application projects in your .NET solution.
 
-## 1. Getting Started
+Install dependencies: You may need to install any necessary NuGet packages based on your setup.
 
-### Prerequisites
+Usage
+To get started with FlexiPriceEngine, follow these steps to set up the pricing engine and apply various discount strategies:
 
-Before you begin, ensure you have the following installed:
-- [.NET SDK](https://dotnet.microsoft.com/download)
-- [ASP.NET Core](https://dotnet.microsoft.com/apps/aspnet)
-- An IDE (such as [Visual Studio](https://visualstudio.microsoft.com/) or [VS Code](https://code.visualstudio.com/))
+Step 1: Create the Pricing Engine
+Initialize the pricing engine and add the discount strategies you want to apply.
 
-### Installation
+csharp
+Copy code
+var pricingEngine = new PricingEngine();
+pricingEngine.AddDiscountService(new LoyaltyDiscountStrategy());
+pricingEngine.AddDiscountService(new StockLevelDiscountStrategy());
+pricingEngine.AddDiscountService(new PurchaseHistoryDiscountStrategy(orderService));
+Step 2: Calculate the Final Price
+Use the CalculateFinalPrice method to compute the final price of a product for a customer.
 
-1. **Clone the repository**:
-   ```bash
-   git clone https://github.com/yourusername/FlexiPrice.git
-   cd FlexiPrice
-   ```
+csharp
+Copy code
+var customer = new Customer { LoyaltyTier = "Gold", Region = "US" };
+var product = new Product { BasePrice = 1000 };
 
-2. **Build the project**:
-   Run the following command in the project root directory to restore the dependencies and build the solution:
-   ```bash
-   dotnet build
-   ```
+var finalPrice = pricingEngine.CalculateFinalPrice(customer, product);
 
-3. **Run the project**:
-   ```bash
-   dotnet run
-   ```
+Console.WriteLine($"Final Price: {finalPrice}");
+Advanced Factors
+FlexiPriceEngine includes advanced factors to handle complex pricing scenarios:
 
-The **FlexiPrice** is now up and running!
+1. Customer Purchase History Analysis
+Analyze a customer's purchase history to offer personalized discounts.
 
----
+csharp
+Copy code
+pricingEngine.AddDiscountService(new PurchaseHistoryDiscountStrategy(orderService));
+Example: Customers who frequently buy complementary products receive additional discounts.
+2. Geographic Location-Based Pricing
+Offer region-specific discounts based on the customer's geographic location.
 
-## 2. Usage
+csharp
+Copy code
+pricingEngine.AddDiscountService(new RegionalPricingStrategy());
+Example: Customers in APAC regions get a higher discount due to market demand.
+3. Time of Day/Week-Based Pricing
+Apply dynamic pricing based on the time of day or week.
 
-### Basic Example
+csharp
+Copy code
+pricingEngine.AddDiscountService(new TimeBasedDiscountStrategy());
+Example: Apply a 10% discount during off-peak hours (2 AM - 6 AM) and special weekend promotions.
+Extending FlexiPriceEngine
+FlexiPriceEngine is designed to be modular and extensible. You can add new services, discount strategies, or custom logic by implementing the IDiscountService interface.
 
-Here’s an example of how to use the **FlexiPrice** in your project:
+Step 1: Create a Custom Discount Strategy
+To add a custom discount strategy, implement the IDiscountService interface.
 
-```csharp
-using FlexiPrice.Models;
-using FlexiPrice.Services;
-using FlexiPrice.Services.DiscountStrategies;
-
-class Program
-{
-    static void Main(string[] args)
-    {
-        var customer = new Customer { Id = 1, Name = "John", LoyaltyTier = "Gold", Region = "US" };
-        var product = new Product { Id = 1, Name = "Laptop", BasePrice = 1000, StockLevel = 120 };
-
-        var pricingEngine = new PricingEngine();
-        pricingEngine.AddDiscountService(new LoyaltyDiscountStrategy());
-        pricingEngine.AddDiscountService(new StockLevelDiscountStrategy());
-        pricingEngine.AddDiscountService(new TimeLimitedPromotionStrategy(DateTime.Now.AddHours(1)));
-
-        var finalPrice = pricingEngine.CalculateFinalPrice(customer, product);
-        Console.WriteLine($"Final price for {customer.Name}: ${finalPrice}");
-    }
-}
-```
-
-### Adding to an ASP.NET Core Project
-
-You can add **FlexiPrice** to an ASP.NET Core application by referencing it as a library. Once you integrate it, you can handle pricing calculations in your controllers or services.
-
-Example in a controller:
-
-```csharp
-using FlexiPrice.Services;
-using FlexiPrice.Models;
-using FlexiPrice.Services.DiscountStrategies;
-
-public class PricingController : ControllerBase
-{
-    private readonly PricingEngine _pricingEngine;
-
-    public PricingController()
-    {
-        _pricingEngine = new PricingEngine();
-        _pricingEngine.AddDiscountService(new LoyaltyDiscountStrategy());
-        _pricingEngine.AddDiscountService(new StockLevelDiscountStrategy());
-        _pricingEngine.AddDiscountService(new TimeLimitedPromotionStrategy(DateTime.Now.AddHours(2)));
-    }
-
-    [HttpGet("calculate-price")]
-    public ActionResult<decimal> CalculatePrice([FromQuery] int customerId, [FromQuery] int productId)
-    {
-        // Logic to retrieve customer and product details
-        var customer = GetCustomerById(customerId);
-        var product = GetProductById(productId);
-
-        var finalPrice = _pricingEngine.CalculateFinalPrice(customer, product);
-        return Ok(finalPrice);
-    }
-}
-```
-
----
-
-## 3. Adding Custom Discount Strategies
-
-To extend **FlexiPrice**, you can create custom discount strategies that plug into the engine’s modular architecture.
-
-### Step-by-Step Guide to Creating a Custom Discount Strategy
-
-1. **Create a new class** that implements `IDiscountService`.
-
-2. **Implement the `CalculateDiscount` method**, defining the logic for your discount.
-
-3. **Add the strategy** to the `PricingEngine` to use it.
-
-Here’s an example of a custom **SeasonalDiscountStrategy**:
-
-```csharp
+csharp
+Copy code
 public class SeasonalDiscountStrategy : IDiscountService
 {
     public Discount CalculateDiscount(Customer customer, Product product)
     {
         var discount = new Discount { Percentage = 0 };
 
-        var currentMonth = DateTime.Now.Month;
-        if (currentMonth == 12) // Christmas season
+        if (DateTime.Now.Month == 12) // Apply discount during December
         {
-            discount.Percentage = 25;
+            discount.Percentage = 15;
+            discount.Description = "Holiday Discount";
         }
 
-        discount.Description = "Seasonal Discount";
         return discount;
     }
 }
-```
+Step 2: Register the Custom Strategy
+After creating a custom strategy, register it in the pricing engine.
 
-### Registering the New Strategy
-
-In your pricing engine configuration:
-
-```csharp
-var pricingEngine = new PricingEngine();
-pricingEngine.AddDiscountService(new LoyaltyDiscountStrategy());
-pricingEngine.AddDiscountService(new StockLevelDiscountStrategy());
+csharp
+Copy code
 pricingEngine.AddDiscountService(new SeasonalDiscountStrategy());
-```
+Discount Strategies
+Here are some of the discount strategies supported by FlexiPriceEngine:
 
----
+Loyalty Discount:
 
-## 4. Expanding the Project
+Offers a discount based on the customer's loyalty tier.
+Stock Level Discount:
 
-### Additional Features You Can Add
+Adjusts the discount based on the stock level of the product.
+Purchase History Discount:
 
-1. **Advanced Caching**:
-   - Improve performance by caching customer or product data, avoiding unnecessary recalculations.
+Offers a discount based on a customer's purchase history.
+Regional Pricing Discount:
 
-2. **Support for Multiple Currencies**:
-   - Add currency conversion rates to handle international pricing.
+Provides region-specific discounts based on the customer’s location.
+Time-Based Discount:
 
-3. **Regional Pricing**:
-   - Create region-based pricing models (e.g., different prices for customers in different countries).
+Applies discounts depending on the time of day or week.
+Contributing
+Contributions are welcome! If you'd like to contribute, please follow these steps:
 
-4. **Volume-Based Discounts**:
-   - Add strategies for offering discounts based on the quantity purchased (e.g., buy 3, get 10% off).
+Fork the repository.
+Create a new branch for your feature or bug fix.
+Make your changes and ensure tests are passing.
+Submit a pull request.
+For major changes, please open an issue first to discuss your idea.
 
-5. **Real-Time Stock Updates**:
-   - Integrate stock level checks with a real-time database or API to adjust discounts based on availability.
-
-## 5. Contributing
-
-If you would like to contribute to **FlexiPrice**, feel free to submit a pull request or open an issue. I would welcome contributions that improve functionality, add new discount strategies, or enhance documentation.
-
-Before contributing, please review our [Contributing Guidelines](CONTRIBUTING.md).
-
----
-
-## License
-
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+License
+This project is licensed under the MIT License. See the LICENSE file for details.
