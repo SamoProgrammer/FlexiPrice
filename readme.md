@@ -1,3 +1,5 @@
+ ![Project Image](https://github.com/SamoProgrammer/FlexiPrice/blob/main/FlexiPrice.webp)
+
 # FlexiPrice
 
 **FlexiPrice** is a flexible and dynamic pricing .Net Library designed for e-commerce platforms. It allows for calculating product prices based on various factors such as customer loyalty, stock levels, time-limited promotions, and other customizable strategies. This project is open-source and can be used and expanded as needed.it has some different example strategies that you can modify them or build your strategies on top of them.so:
