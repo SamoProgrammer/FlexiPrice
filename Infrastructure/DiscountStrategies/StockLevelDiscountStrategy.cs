@@ -1,6 +1,6 @@
 using FlexiPrice.Models;
 
-namespace FlexiPrice.Services.DiscountStrategies
+namespace FlexiPrice.Infrastructure.DiscountStrategies
 {
     public class StockLevelDiscountStrategy : IDiscountService
     {

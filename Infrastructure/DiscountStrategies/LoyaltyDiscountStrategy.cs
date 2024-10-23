@@ -1,6 +1,8 @@
-using FlexiPrice.Models;
 
-namespace FlexiPrice.Services.DiscountStrategies
+using FlexiPrice.Core.Interfaces;
+using FlexiPrice.Core.Models;
+
+namespace FlexiPrice.Infrastructure.DiscountStrategies
 {
     public class LoyaltyDiscountStrategy : IDiscountService
     {

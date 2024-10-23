@@ -1,4 +1,4 @@
-namespace FlexiPrice.Models
+namespace FlexiPrice.Core.Models
 {
     public class Customer
     {

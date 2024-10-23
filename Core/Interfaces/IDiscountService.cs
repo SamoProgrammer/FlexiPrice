@@ -1,6 +1,6 @@
-using FlexiPrice.Models;
+using FlexiPrice.Core.Models;
 
-namespace FlexiPrice.Services
+namespace FlexiPrice.Core.Interfaces
 {
     public interface IDiscountService
     {
